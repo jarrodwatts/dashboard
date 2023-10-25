@@ -266,6 +266,7 @@ export enum PageId {
 
   // drops
   DropsOptimism = "drops-optimism",
+  DropsSuperchain = "drops-superchain",
 
   // ---------------------------------------------------------------------------
   //  community pages
