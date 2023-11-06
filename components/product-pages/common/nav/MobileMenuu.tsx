@@ -1,6 +1,11 @@
 import { Box, DrawerOverlay, Flex, VStack } from "@chakra-ui/react";
-import React, { Fragment } from "react";
-import { DEVELOPER_RESOURCES, PRODUCTS, SOLUTIONS } from "./data";
+import React, { Fragment, useState } from "react";
+import {
+  DEVELOPER_RESOURCES,
+  PRODUCTS,
+  PRODUCT_SECTIONS,
+  SOLUTIONS,
+} from "./data";
 import NavLink from "./NavLink";
 
 const bgFixedPositionStyles = {
@@ -13,18 +18,22 @@ const bgFixedPositionStyles = {
 };
 
 const MobileMenuu = () => {
+  const [selectedProduct, setSelectedProduct] = useState();
   const products = [
     {
       label: "Products",
+      sections: PRODUCT_SECTIONS,
       links: PRODUCTS,
     },
     {
-      label: "Solutions",
-      links: SOLUTIONS,
+      label: "Products",
+      sections: PRODUCT_SECTIONS,
+      links: PRODUCTS,
     },
     {
-      label: "Resources",
-      links: DEVELOPER_RESOURCES,
+      label: "Products",
+      sections: PRODUCT_SECTIONS,
+      links: PRODUCTS,
     },
   ];
   return (
@@ -45,7 +54,16 @@ const MobileMenuu = () => {
         background={"#000000"}
         maxH={"calc(100vh - 20px)"}
       >
-        <NavLink />
+        {products.map((product, index) => {
+          return (
+            <NavLink
+              label={product.label}
+              sections={product.sections}
+              links={product.links}
+              key={index}
+            />
+          );
+        })}
       </Flex>
     </Fragment>
   );
