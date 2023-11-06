@@ -38,7 +38,7 @@ export const MobileMenu: React.FC<FlexProps> = (props) => {
         variant="ghost"
         onClick={disclosure.onOpen}
       />
-      <Drawer
+      {/* <Drawer
         drawerBodyProps={{ bg: "#111315" }}
         isOpen={disclosure.isOpen}
         onClose={disclosure.onClose}
@@ -63,7 +63,7 @@ export const MobileMenu: React.FC<FlexProps> = (props) => {
             onItemClick={disclosure.onClose}
           />
         </Flex>
-      </Drawer>
+      </Drawer> */}
     </Flex>
   );
 };
