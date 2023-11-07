@@ -18,24 +18,21 @@ const bgFixedPositionStyles = {
 };
 
 const MobileMenuu = () => {
-  const [selectedProduct, setSelectedProduct] = useState();
-  const products = [
-    {
-      label: "Products",
+  const [selectedLabel, setSelectedLabel] = useState<any>({
+    id: "",
+    label: "",
+  });
+
+  const products = {
+    products: {
+      title: "Products",
       sections: PRODUCT_SECTIONS,
       links: PRODUCTS,
     },
-    {
-      label: "Products",
-      sections: PRODUCT_SECTIONS,
-      links: PRODUCTS,
-    },
-    {
-      label: "Products",
-      sections: PRODUCT_SECTIONS,
-      links: PRODUCTS,
-    },
-  ];
+  };
+  // @ts-ignore
+  const selectedProduct = products[selectedLabel.id];
+
   return (
     <Fragment>
       <Box zIndex={999} {...(bgFixedPositionStyles as any)} background="red" />
@@ -54,16 +51,30 @@ const MobileMenuu = () => {
         background={"#000000"}
         maxH={"calc(100vh - 20px)"}
       >
-        {products.map((product, index) => {
-          return (
-            <NavLink
-              label={product.label}
-              sections={product.sections}
-              links={product.links}
-              key={index}
-            />
-          );
-        })}
+        {!!selectedProduct
+          ? selectedProduct.links
+              .filter((link) => link.section === selectedLabel.label)
+              .map((link, index) => {
+                return (
+                  <h1 key={index} style={{ color: "#fff" }}>
+                    {link.name}
+                  </h1>
+                );
+              })
+          : Object.entries(products).map(
+              ([title, { sections, links }], index) => {
+                return (
+                  <NavLink
+                    title={title}
+                    label={title}
+                    sections={sections}
+                    links={links}
+                    key={index}
+                    setSelectedLabel={setSelectedLabel}
+                  />
+                );
+              },
+            )}
       </Flex>
     </Fragment>
   );

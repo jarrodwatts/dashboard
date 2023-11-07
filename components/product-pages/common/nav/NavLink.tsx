@@ -6,9 +6,16 @@ interface NavLinkProps {
   label: string;
   sections: any;
   links: any;
+  setSelectedLabel: any;
+  title: any;
 }
 
-const NavLink = ({ label, links }: NavLinkProps) => {
+const NavLink = ({
+  title,
+  label,
+  sections,
+  setSelectedLabel,
+}: NavLinkProps) => {
   return (
     <Box w="100%">
       <Text
@@ -21,7 +28,7 @@ const NavLink = ({ label, links }: NavLinkProps) => {
         {label}
       </Text>
 
-      {links.map((link: any, index: number) => {
+      {sections.map((section: any, index: number) => {
         return (
           <Box
             background={"#0E0F11"}
@@ -29,12 +36,15 @@ const NavLink = ({ label, links }: NavLinkProps) => {
             w="100%"
             cursor={"pointer"}
             key={index}
+            onClick={() =>
+              setSelectedLabel({ id: title, label: section.label })
+            }
           >
             <Text fontWeight={600} color={"#fff"} fontSize={"16px"}>
-              {link.name}
+              {section.name}
             </Text>
             <Text marginTop={"4px"} color={"#fff"} fontSize={"14px"}>
-              {link.description}
+              {section.description}
             </Text>
           </Box>
         );
