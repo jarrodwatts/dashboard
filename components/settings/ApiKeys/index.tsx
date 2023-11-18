@@ -101,7 +101,7 @@ export const ApiKeys: ComponentWithChildren<ApiKeysProps> = ({
 
   return (
     <TWTable
-      title="api key"
+      title="API key"
       columns={columns}
       data={keys}
       isLoading={isLoading}
