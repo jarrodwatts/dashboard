@@ -1,9 +1,14 @@
 import {
+  useAccount,
+  useCreateBillingSession,
+} from "@3rdweb-sdk/react/hooks/useApi";
+import {
   Divider,
   Flex,
   FormControl,
   Icon,
   Input,
+  ListItem,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -11,7 +16,10 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Stack,
+  Tooltip,
+  UnorderedList,
   useColorMode,
   useDisclosure,
   useToast,
@@ -25,7 +33,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiRocket } from "react-icons/bi";
 import { BsCloudCheck, BsGear } from "react-icons/bs";
-import { FiPlus } from "react-icons/fi";
+import { FiExternalLink, FiPlus } from "react-icons/fi";
 import {
   Text,
   Heading,
@@ -34,18 +42,19 @@ import {
   FormLabel,
   FormHelperText,
   Link,
-  Card,
+  TrackedLink,
 } from "tw-components";
-import { stripePaymentElementAppearance } from "components/onboarding/Billing";
-
-// DEBUG: DO NOT MERGE
-const CARD_ONLY_PAYMENT_METHOD_CFG_ID = "pmc_1ODIWMCQUO4TBFqFLC3qxXxg";
 
 interface AddEngineInstanceButtonProps {
   refetch: () => void;
 }
 
-type ModalState = "selectHostingOption" | "importEngine" | "addCloudHosted";
+type ModalState =
+  | "selectHostingOption"
+  | "importEngine"
+  | "addCloudHosted"
+  | "addPaymentMethod"
+  | "completeCloudHosted";
 
 export const AddEngineInstanceButton = ({
   refetch,
@@ -69,13 +78,16 @@ export const AddEngineInstanceButton = ({
         }}
       />
     ) : modalState === "addCloudHosted" ? (
-      <ModalAddCloudHosted
-        setModalState={setModalState}
+      <ModalAddCloudHosted setModalState={setModalState} />
+    ) : modalState === "completeCloudHosted" ? (
+      <ModalCompleteCloudHosted
         onSuccess={() => {
           onClose();
           refetch();
         }}
       />
+    ) : modalState === "addPaymentMethod" ? (
+      <ModalAddPayment setModalState={setModalState} />
     ) : null;
 
   return (
@@ -113,9 +125,15 @@ const ModalSelectHostingOption = ({
   setModalState: Dispatch<SetStateAction<ModalState>>;
 }) => {
   const trackEvent = useTrack();
+  const meQuery = useAccount();
 
   const onClickCloudHosted = () => {
-    setModalState("addCloudHosted");
+    if (meQuery.isLoading) {
+      return;
+    }
+
+    const hasPaymentMethod = meQuery.data?.status === "validPayment";
+    setModalState(hasPaymentMethod ? "addCloudHosted" : "addPaymentMethod");
   };
 
   const onClickSelfHosted = () => {
@@ -313,40 +331,72 @@ const ModalImportEngine = ({
   );
 };
 
-const ModalAddCloudHosted = ({
+const ModalAddPayment = ({
   setModalState,
-  onSuccess,
 }: {
   setModalState: Dispatch<SetStateAction<ModalState>>;
-  onSuccess: () => void;
 }) => {
-  const { colorMode } = useColorMode();
-  const toast = useToast();
-  const [stripePromise, setStripePromise] = useState<
-    Promise<Stripe | null> | undefined
-  >();
+  const trackEvent = useTrack();
+  const createBillingSessionMutation = useCreateBillingSession();
+
+  return (
+    <>
+      <ModalHeader>Deploy a Cloud-Hosted Engine</ModalHeader>
+      <ModalBody>
+        <Text>Please add a payment method to continue.</Text>
+      </ModalBody>
+
+      <ModalFooter as={Flex} gap={3}>
+        <Button
+          onClick={() => setModalState("selectHostingOption")}
+          variant="ghost"
+        >
+          Back
+        </Button>
+        <Button
+          onClick={() => {
+            trackEvent({
+              category: "engine",
+              action: "click",
+              label: "add-payment-method",
+            });
+            createBillingSessionMutation.mutate(undefined, {
+              onSuccess: (data) => window.open(data.url),
+            });
+          }}
+          colorScheme="primary"
+        >
+          Add Payment Method
+        </Button>
+      </ModalFooter>
+    </>
+  );
+};
+
+const ModalAddCloudHosted = ({
+  setModalState,
+}: {
+  setModalState: Dispatch<SetStateAction<ModalState>>;
+}) => {
+  const trackEvent = useTrack();
   const form = useForm({
     defaultValues: {
       secretKey: "",
     },
   });
 
-  useEffect(() => {
-    if (process.env.NEXT_PUBLIC_STRIPE_KEY) {
-      (async () => {
-        setStripePromise(loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY ?? ""));
-      })();
-    }
-  }, []);
-
-  const onSubmit = async (data: { secretKey: string }) => {};
-
-  const onPaymentSave = () => {};
-  const onPaymentCancel = () => {};
+  const onSubmit = async (formData: { secretKey: string }) => {
+    trackEvent({
+      category: "engine",
+      action: "click",
+      label: "deploy-cloud-hosted",
+    });
+    setModalState("completeCloudHosted");
+  };
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <ModalHeader>Add a Cloud-Hosted Engine</ModalHeader>
+      <ModalHeader>Deploy a Cloud-Hosted Engine</ModalHeader>
 
       <ModalBody>
         <Stack spacing={8}>
@@ -356,7 +406,7 @@ const ModalAddCloudHosted = ({
               type="text"
               placeholder="Your thirdweb secret key"
               autoFocus
-              {...form.register("secretKey")}
+              {...form.register("secretKey", { required: true })}
             />
             <FormHelperText>
               <Link
@@ -370,52 +420,10 @@ const ModalAddCloudHosted = ({
             </FormHelperText>
           </FormControl>
 
-          {/* Payment */}
-          {/* {stripePromise && (
-            <Elements
-              stripe={stripePromise}
-              options={{
-                mode: "setup",
-                paymentMethodCreation: "manual",
-                currency: "usd",
-                paymentMethodConfiguration: CARD_ONLY_PAYMENT_METHOD_CFG_ID,
-                appearance: {
-                  theme: colorMode === "dark" ? "night" : "stripe",
-                  ...stripePaymentElementAppearance,
-                },
-              }}
-            >
-              <OnboardingPaymentForm
-                onSave={onPaymentSave}
-                onCancel={onPaymentCancel}
-              />
-            </Elements>
-          )} */}
-
-          {/* Price summary */}
-          {/* <Stack>
-            <Flex justify="space-between">
-              <Text>Cloud-hosted Engine</Text>
-              <Text>$99 / month</Text>
-            </Flex>
-            <Divider />
-            <Flex justify="space-between">
-              <Text fontWeight="bold">Total</Text>
-              <Text fontWeight="bold">$99 / month</Text>
-            </Flex>
-          </Stack> */}
-          <Stack>
-            <Flex justify="space-between" align="baseline">
-              <Text>Payment Method</Text>
-              <Link href="#" color="blue.500" fontSize="14px">
-                Add a payment to continue
-              </Link>
-            </Flex>
-            <Flex justify="space-between">
-              <Text>Cloud-hosted Engine</Text>
-              <Text>$99 / month</Text>
-            </Flex>
-          </Stack>
+          <Flex justify="space-between">
+            <Text>Cloud-hosted Engine</Text>
+            <Text>$99 / month</Text>
+          </Flex>
         </Stack>
       </ModalBody>
 
@@ -426,15 +434,63 @@ const ModalAddCloudHosted = ({
         >
           Back
         </Button>
-        <Button
-          type="submit"
-          colorScheme="primary"
-          leftIcon={<BiRocket />}
-          isDisabled
-        >
+        <Button type="submit" colorScheme="primary" leftIcon={<BiRocket />}>
           Deploy
         </Button>
       </ModalFooter>
     </form>
+  );
+};
+
+const ModalCompleteCloudHosted = ({ onSuccess }: { onSuccess: () => void }) => {
+  const meQuery = useAccount();
+
+  return (
+    <>
+      <ModalHeader>Deploy a Cloud-Hosted Engine</ModalHeader>
+
+      <ModalBody>
+        <Stack>
+          <Text>Your Engine instance is being deployed!</Text>
+          <Text>
+            This can take up to 10 minutes. An email will be sent to{" "}
+            <strong>{meQuery.data?.email}</strong> when the deployment is
+            complete.
+          </Text>
+
+          <Text mt={4}>Helpful resources:</Text>
+          <UnorderedList>
+            <ListItem>
+              <Text>
+                <Link
+                  href="https://portal.thirdweb.com/engine/backend-wallets"
+                  isExternal
+                  color="blue.500"
+                >
+                  Create backend wallets
+                </Link>
+              </Text>
+            </ListItem>
+            <ListItem>
+              <Text>
+                <Link
+                  href="https://portal.thirdweb.com/engine/authentication"
+                  isExternal
+                  color="blue.500"
+                >
+                  Add admin users
+                </Link>
+              </Text>
+            </ListItem>
+          </UnorderedList>
+        </Stack>
+      </ModalBody>
+
+      <ModalFooter>
+        <Button onClick={onSuccess} colorScheme="primary">
+          Done
+        </Button>
+      </ModalFooter>
+    </>
   );
 };

@@ -85,7 +85,7 @@ export const OnboardingBilling: React.FC<OnboardingBillingProps> = ({
                 process.env.NEXT_PUBLIC_STRIPE_PAYMENT_METHOD_CFG_ID,
               appearance: {
                 theme: colorMode === "dark" ? "night" : "stripe",
-                ...stripePaymentElementAppearance,
+                ...appearance,
               },
             }}
           >
@@ -97,7 +97,7 @@ export const OnboardingBilling: React.FC<OnboardingBillingProps> = ({
   );
 };
 
-export const stripePaymentElementAppearance = {
+const appearance = {
   variables: {
     fontFamily: "Inter, system-ui, sans-serif",
     fontSizeBase: "15px",

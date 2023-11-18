@@ -14,6 +14,9 @@ export interface EngineInstance {
   name: string;
   url: string;
   lastAccessedAt: string;
+
+  status: "active" | "deploying";
+  cloudDeployedAt?: string;
 }
 
 export function useEngineInstances() {

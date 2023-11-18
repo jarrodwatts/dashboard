@@ -11,6 +11,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spinner,
   Stack,
   Tooltip,
   UseDisclosureReturn,
@@ -23,6 +24,7 @@ import { useForm } from "react-hook-form";
 import { BiPencil } from "react-icons/bi";
 import { FiTrash } from "react-icons/fi";
 import {
+  Badge,
   Button,
   Card,
   FormLabel,
@@ -97,7 +99,19 @@ export const EngineInstancesList = ({
                 p={8}
               >
                 <Stack>
-                  <Heading size="label.lg">{instance.name}</Heading>
+                  <Flex gap={2} align="center">
+                    <Heading size="label.lg">{instance.name}</Heading>
+                    {instance.cloudDeployedAt && (
+                      <Badge
+                        variant="outline"
+                        colorScheme="green"
+                        rounded="md"
+                        size="label.sm"
+                      >
+                        Cloud-hosted
+                      </Badge>
+                    )}
+                  </Flex>
                   <Text fontSize="small">{instance.url}</Text>
                 </Stack>
 
@@ -241,6 +255,19 @@ const ConnectButton = ({
       setIsLoading(false);
     }
   };
+
+  if (instance.status === "deploying") {
+    return (
+      <Tooltip label="This instance is being deployed by thirdweb.">
+        <Button
+          variant="outline"
+          isDisabled
+          isLoading
+          loadingText="Deploying"
+        />
+      </Tooltip>
+    );
+  }
 
   return (
     <Button
