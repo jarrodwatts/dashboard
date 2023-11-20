@@ -3,7 +3,6 @@ import {
   useCreateBillingSession,
 } from "@3rdweb-sdk/react/hooks/useApi";
 import {
-  Divider,
   Flex,
   FormControl,
   Icon,
@@ -16,24 +15,19 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spinner,
   Stack,
-  Tooltip,
   UnorderedList,
-  useColorMode,
+  UseDisclosureReturn,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { Elements } from "@stripe/react-stripe-js";
-import { Stripe, loadStripe } from "@stripe/stripe-js";
-import { OnboardingPaymentForm } from "components/onboarding/PaymentForm";
 import { THIRDWEB_API_HOST } from "constants/urls";
 import { useTrack } from "hooks/analytics/useTrack";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BiRocket } from "react-icons/bi";
 import { BsCloudCheck, BsGear } from "react-icons/bs";
-import { FiExternalLink, FiPlus } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import {
   Text,
   Heading,
@@ -42,7 +36,6 @@ import {
   FormLabel,
   FormHelperText,
   Link,
-  TrackedLink,
 } from "tw-components";
 
 interface AddEngineInstanceButtonProps {
@@ -59,36 +52,8 @@ type ModalState =
 export const AddEngineInstanceButton = ({
   refetch,
 }: AddEngineInstanceButtonProps) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const disclosure = useDisclosure();
   const trackEvent = useTrack();
-
-  const [modalState, setModalState] = useState<ModalState>(
-    "selectHostingOption",
-  );
-
-  const content =
-    modalState === "selectHostingOption" ? (
-      <ModalSelectHostingOption setModalState={setModalState} />
-    ) : modalState === "importEngine" ? (
-      <ModalImportEngine
-        setModalState={setModalState}
-        onSuccess={() => {
-          onClose();
-          refetch();
-        }}
-      />
-    ) : modalState === "addCloudHosted" ? (
-      <ModalAddCloudHosted setModalState={setModalState} />
-    ) : modalState === "completeCloudHosted" ? (
-      <ModalCompleteCloudHosted
-        onSuccess={() => {
-          onClose();
-          refetch();
-        }}
-      />
-    ) : modalState === "addPaymentMethod" ? (
-      <ModalAddPayment setModalState={setModalState} />
-    ) : null;
 
   return (
     <>
@@ -99,7 +64,7 @@ export const AddEngineInstanceButton = ({
             action: "click",
             label: "add-engine-instance",
           });
-          onOpen();
+          disclosure.onOpen();
         }}
         colorScheme="blue"
         leftIcon={<Icon as={FiPlus} boxSize={4} />}
@@ -108,14 +73,60 @@ export const AddEngineInstanceButton = ({
         Add Engine Instance
       </Button>
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          {content}
-        </ModalContent>
-      </Modal>
+      {disclosure.isOpen && (
+        <ModalBase disclosure={disclosure} refetch={refetch} />
+      )}
     </>
+  );
+};
+
+const ModalBase = ({
+  disclosure,
+  refetch,
+}: {
+  disclosure: UseDisclosureReturn;
+  refetch: () => void;
+}) => {
+  const [modalState, setModalState] = useState<ModalState>(
+    "selectHostingOption",
+  );
+
+  return (
+    <Modal
+      isOpen={disclosure.isOpen}
+      onClose={disclosure.onClose}
+      isCentered
+      size="lg"
+      closeOnOverlayClick={false}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalCloseButton />
+
+        {modalState === "selectHostingOption" ? (
+          <ModalSelectHostingOption setModalState={setModalState} />
+        ) : modalState === "importEngine" ? (
+          <ModalImportEngine
+            setModalState={setModalState}
+            onSuccess={() => {
+              disclosure.onClose();
+              refetch();
+            }}
+          />
+        ) : modalState === "addCloudHosted" ? (
+          <ModalAddCloudHosted setModalState={setModalState} />
+        ) : modalState === "completeCloudHosted" ? (
+          <ModalCompleteCloudHosted
+            onSuccess={() => {
+              disclosure.onClose();
+              refetch();
+            }}
+          />
+        ) : modalState === "addPaymentMethod" ? (
+          <ModalAddPayment setModalState={setModalState} />
+        ) : null}
+      </ModalContent>
+    </Modal>
   );
 };
 
@@ -378,6 +389,7 @@ const ModalAddCloudHosted = ({
 }: {
   setModalState: Dispatch<SetStateAction<ModalState>>;
 }) => {
+  const toast = useToast();
   const trackEvent = useTrack();
   const form = useForm({
     defaultValues: {
@@ -385,13 +397,34 @@ const ModalAddCloudHosted = ({
     },
   });
 
-  const onSubmit = async (formData: { secretKey: string }) => {
+  const onSubmit = async (data: { secretKey: string }) => {
     trackEvent({
       category: "engine",
       action: "click",
       label: "deploy-cloud-hosted",
     });
-    setModalState("completeCloudHosted");
+
+    try {
+      const res = await fetch(`${THIRDWEB_API_HOST}/v1/engine/deploy`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        throw new Error(`Unexpected status ${res.status}`);
+      }
+
+      setModalState("completeCloudHosted");
+    } catch (e) {
+      console.error(`Error deploying Engine: ${e}`);
+      toast({
+        status: "error",
+        description: "Error deploying Engine.",
+      });
+    }
   };
 
   return (
