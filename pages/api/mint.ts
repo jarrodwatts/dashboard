@@ -18,6 +18,30 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  return res.status(200).send(
+    `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>Recast Post</title>
+      <meta property="fc:frame" content="vNext" />
+      <meta
+        property="fc:frame:image"
+        content={${getAbsoluteUrl()}/assets/og-image/marketplace-solutions.png}
+      />
+      <meta
+        property="fc:frame:post_url"
+        content={${getAbsoluteUrl()}/api/mint?type=recast}
+      />
+      <meta property="fc:frame:button:1" content="Recast to mint NFT" />
+    </head>
+    <body>
+      <p>Recast to mint NFT</p>
+    </body>
+  </html>
+`,
+  );
+
   if (req.method !== "POST") {
     return res.status(400).send({ error: "invalid method" });
   }
