@@ -18,6 +18,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  res.setHeader("Access-Control-Allow-Credentials", "false");
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
+  );
+
   return res.status(200).send(
     `
   <!DOCTYPE html>
@@ -145,9 +153,6 @@ export default async function handler(
       );
     }
   } catch (err) {
-    Sentry.captureMessage(
-      `Failed to mint with frames. Error: ${(err as any).message}`,
-    );
     return res.status(500).send({ error: "Something went wrong" });
   }
 }
