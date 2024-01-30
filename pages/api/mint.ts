@@ -16,13 +16,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  res.setHeader("Access-Control-Allow-Credentials", "false");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
-  );
+  res.setHeader("Access-Control-Allow-Headers", "*");
 
   if (req.method !== "POST") {
     return res.status(400).send({ error: "invalid method" });
