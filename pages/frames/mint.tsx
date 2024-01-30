@@ -25,7 +25,7 @@ export default function FramesMint() {
           property="fc:frame:post_url"
           content={`${getAbsoluteUrl()}/api/mint?type=start`}
         />
-        <meta property="fc:frame:button:1" content="Green" />
+        <meta property="fc:frame:button:1" content="Get started" />
       </Head>
     </Fragment>
   );
