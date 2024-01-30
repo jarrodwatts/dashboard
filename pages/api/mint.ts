@@ -23,7 +23,7 @@ export default async function handler(
     "Access-Control-Allow-Headers",
     "Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
   );
-  
+
   if (req.method !== "POST") {
     return res.status(400).send({ error: "invalid method" });
   }
