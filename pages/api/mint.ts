@@ -35,11 +35,11 @@ export default async function handler(
       <meta property="fc:frame" content="vNext" />
       <meta
         property="fc:frame:image"
-        content={${getAbsoluteUrl()}/assets/og-image/marketplace-solutions.png}
+        content={${process.env.NEXT_PUBLIC_HOST}/assets/og-image/marketplace-solutions.png}
       />
       <meta
         property="fc:frame:post_url"
-        content={${getAbsoluteUrl()}/api/mint?type=recast}
+        content={${process.env.NEXT_PUBLIC_HOST}/api/mint?type=recast}
       />
       <meta property="fc:frame:button:1" content="Recast to mint NFT" />
     </head>

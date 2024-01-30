@@ -19,18 +19,18 @@ export default function FramesMint() {
         <meta property="fc:frame" content="vNext" />
         <meta
           property="fc:frame:image"
-          content={`${getAbsoluteUrl()}/assets/og-image/marketplace-solutions.png`}
+          content={`${process.env.NEXT_PUBLIC_HOST}/assets/og-image/marketplace-solutions.png`}
         />
         <meta
           property="fc:frame:post_url"
-          content={`${getAbsoluteUrl()}/api/mint?type=start`}
+          content={`${process.env.NEXT_PUBLIC_HOST}/api/mint?type=start`}
         />
         <meta property="fc:frame:button:1" content="Get started" />
       </Head>
       <button
         onClick={async () => {
           await fetch(
-            `https://thirdweb-49tigo1yl.thirdweb-preview.com/api/mint?type=start`,
+            `https://thirdweb-rhhmgamkk.thirdweb-preview.com/api/mint?type=start`,
             {
               method: "POST",
               body: JSON.stringify({
