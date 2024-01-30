@@ -2,6 +2,7 @@ import { Warpcast } from "classes/Warpcast";
 import { getAbsoluteUrl } from "lib/vercel-utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
+import * as Sentry from "@sentry/nextjs";
 
 const requestBodyWarpcastSchema = z.object({
   trustedData: z.object({
@@ -23,6 +24,7 @@ export default async function handler(
 
   try {
     const { type } = requestQuerySchema.parse(req.query);
+
     const { trustedData } = requestBodyWarpcastSchema.parse(req.body);
 
     const action = await Warpcast.validateMessage(trustedData.messageBytes);
@@ -111,6 +113,9 @@ export default async function handler(
       );
     }
   } catch (err) {
+    Sentry.captureMessage(
+      `Failed to mint with frames. Error: ${(err as any).message}`,
+    );
     return res.status(500).send({ error: "Something went wrong" });
   }
 }
