@@ -1,8 +1,6 @@
 import { Warpcast } from "classes/Warpcast";
-import { getAbsoluteUrl } from "lib/vercel-utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z } from "zod";
-import * as Sentry from "@sentry/nextjs";
 
 const requestBodyWarpcastSchema = z.object({
   trustedData: z.object({
@@ -18,6 +16,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (req.method !== "POST") {
+    return res.status(400).send({ error: "invalid method" });
+  }
+
   res.setHeader("Access-Control-Allow-Credentials", "false");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST");
@@ -25,34 +27,6 @@ export default async function handler(
     "Access-Control-Allow-Headers",
     "Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
   );
-
-  return res.status(200).send(
-    `
-  <!DOCTYPE html>
-  <html>
-    <head>
-      <title>Recast Post</title>
-      <meta property="fc:frame" content="vNext" />
-      <meta
-        property="fc:frame:image"
-        content={${process.env.NEXT_PUBLIC_HOST}/assets/og-image/marketplace-solutions.png}
-      />
-      <meta
-        property="fc:frame:post_url"
-        content={${process.env.NEXT_PUBLIC_HOST}/api/mint?type=recast}
-      />
-      <meta property="fc:frame:button:1" content="Recast to mint NFT" />
-    </head>
-    <body>
-      <p>Recast to mint NFT</p>
-    </body>
-  </html>
-`,
-  );
-
-  if (req.method !== "POST") {
-    return res.status(400).send({ error: "invalid method" });
-  }
 
   res.setHeader("Access-Control-Allow-Credentials", "false");
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -79,11 +53,11 @@ export default async function handler(
           <meta property="fc:frame" content="vNext" />
           <meta
             property="fc:frame:image"
-            content={${getAbsoluteUrl()}/assets/og-image/marketplace-solutions.png}
+            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
           />
           <meta
             property="fc:frame:post_url"
-            content={${getAbsoluteUrl()}/api/mint?type=recast}
+            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=recast}
           />
           <meta property="fc:frame:button:1" content="Recast to mint NFT" />
         </head>
@@ -111,11 +85,11 @@ export default async function handler(
           <meta property="fc:frame" content="vNext" />
           <meta
             property="fc:frame:image"
-            content={${getAbsoluteUrl()}/assets/og-image/marketplace-solutions.png}
+            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
           />
           <meta
             property="fc:frame:post_url"
-            content={${getAbsoluteUrl()}/api/mint?type=starter}
+            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=starter}
           />
           <meta property="fc:frame:button:1" content="Recast to mint NFT" />
         </head>
@@ -137,11 +111,11 @@ export default async function handler(
           <meta property="fc:frame" content="vNext" />
           <meta
             property="fc:frame:image"
-            content={${getAbsoluteUrl()}/assets/og-image/marketplace-solutions.png}
+             content={${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
           />
           <meta
             property="fc:frame:post_url"
-            content={${getAbsoluteUrl()}/api/mint?type=mint}
+            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=mint}
           />
           <meta property="fc:frame:button:1" content="Mint NFT" />
         </head>
