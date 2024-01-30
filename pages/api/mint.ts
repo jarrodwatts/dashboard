@@ -53,11 +53,11 @@ export default async function handler(
           <meta property="fc:frame" content="vNext" />
           <meta
             property="fc:frame:image"
-            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
+            content={https://${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
           />
           <meta
             property="fc:frame:post_url"
-            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=recast}
+            content={https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=recast}
           />
           <meta property="fc:frame:button:1" content="Recast to mint NFT" />
         </head>
@@ -85,11 +85,11 @@ export default async function handler(
           <meta property="fc:frame" content="vNext" />
           <meta
             property="fc:frame:image"
-            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
+            content={https://${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
           />
           <meta
             property="fc:frame:post_url"
-            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=starter}
+            content={https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=starter}
           />
           <meta property="fc:frame:button:1" content="Recast to mint NFT" />
         </head>
@@ -111,11 +111,11 @@ export default async function handler(
           <meta property="fc:frame" content="vNext" />
           <meta
             property="fc:frame:image"
-             content={${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
+             content={https://${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png}
           />
           <meta
             property="fc:frame:post_url"
-            content={${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=mint}
+            content={https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=mint}
           />
           <meta property="fc:frame:button:1" content="Mint NFT" />
         </head>

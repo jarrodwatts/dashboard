@@ -19,11 +19,11 @@ export default function FramesMint() {
         <meta property="fc:frame" content="vNext" />
         <meta
           property="fc:frame:image"
-          content={`${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png`}
+          content={`https://${process.env.NEXT_PUBLIC_VERCEL_URL}/assets/og-image/marketplace-solutions.png`}
         />
         <meta
           property="fc:frame:post_url"
-          content={`${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=start`}
+          content={`https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/mint?type=start`}
         />
         <meta property="fc:frame:button:1" content="Get started" />
       </Head>
