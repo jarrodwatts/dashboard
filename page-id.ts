@@ -154,6 +154,9 @@ export enum PageId {
   // thirdweb.com/explore
   Explore = "explore",
 
+  // thirdweb.com/frames/mint
+  FramesMint = "frames-mint",
+
   // thirdweb.com/events
   Events = "events",
 
