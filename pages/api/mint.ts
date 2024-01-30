@@ -28,14 +28,6 @@ export default async function handler(
     "Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
   );
 
-  res.setHeader("Access-Control-Allow-Credentials", "false");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
-  );
-
   try {
     const { type } = requestQuerySchema.parse(req.query);
 
