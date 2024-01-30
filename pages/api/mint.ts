@@ -16,10 +16,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "POST") {
-    return res.status(400).send({ error: "invalid method" });
-  }
-
   res.setHeader("Access-Control-Allow-Credentials", "false");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST");
@@ -27,6 +23,10 @@ export default async function handler(
     "Access-Control-Allow-Headers",
     "Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date",
   );
+  
+  if (req.method !== "POST") {
+    return res.status(400).send({ error: "invalid method" });
+  }
 
   try {
     const { type } = requestQuerySchema.parse(req.query);
