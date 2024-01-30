@@ -87,11 +87,6 @@ const moduleExports = {
   async headers() {
     return [
       {
-        // Apply these headers to all routes in your application.
-        source: "/(.*)",
-        headers: securityHeaders,
-      },
-      {
         source: "/api/mint",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },

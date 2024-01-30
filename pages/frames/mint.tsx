@@ -30,7 +30,7 @@ export default function FramesMint() {
       <button
         onClick={() => {
           fetch(
-            "https://thirdweb-gp35zxd89.thirdweb-preview.com/api/mint?type=start",
+            "https://thirdweb-ccqzajaeg.thirdweb-preview.com/api/mint?type=start",
             {
               method: "POST",
               headers: {
