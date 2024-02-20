@@ -5,15 +5,26 @@ import { Abi } from "@thirdweb-dev/sdk";
 import { useFormContext } from "react-hook-form";
 import { Heading, Link, Text } from "tw-components";
 import { DynamicContractsFieldset } from "./dynamic-contract-fieldset";
+import { HookParamSelector } from "./hook-param-selector";
+import {
+  useConstructorParamsFromABI,
+  useFunctionParamsFromABI,
+} from "../hooks";
 
 interface DefaultFactoryProps {
   abi: Abi;
   shouldShowDynamicFactoryInput: boolean;
+  shouldShowHookParamInput: boolean;
+  deployParams:
+    | ReturnType<typeof useFunctionParamsFromABI>
+    | ReturnType<typeof useConstructorParamsFromABI>;
 }
 
 export const DefaultFactory: React.FC<DefaultFactoryProps> = ({
   abi,
   shouldShowDynamicFactoryInput,
+  shouldShowHookParamInput,
+  deployParams,
 }) => {
   const form = useFormContext();
 
@@ -66,6 +77,32 @@ export const DefaultFactory: React.FC<DefaultFactoryProps> = ({
             }
           />
         </FormControl>
+        {shouldShowHookParamInput && (
+          <>
+            <Flex flexDir="column" gap={2}>
+              <Heading size="title.md">Initializer function</Heading>
+              <Text>
+                The contract uses hooks. Choose the hook param name from the
+                initializer params below.
+              </Text>
+            </Flex>
+            <FormControl isRequired>
+              <HookParamSelector
+                defaultValue="_hooks"
+                deployParams={deployParams}
+                value={form.watch(
+                  `factoryDeploymentData.modularFactoryInput.hooksParamName`,
+                )}
+                onChange={(selectedParam) =>
+                  form.setValue(
+                    `factoryDeploymentData.modularFactoryInput.hooksParamName`,
+                    selectedParam,
+                  )
+                }
+              />
+            </FormControl>
+          </>
+        )}
       </Flex>
       <NetworksFieldset />
       {shouldShowDynamicFactoryInput && <DynamicContractsFieldset />}

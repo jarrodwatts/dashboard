@@ -5,17 +5,27 @@ import { Abi } from "@thirdweb-dev/sdk";
 import { Dispatch, SetStateAction } from "react";
 import { useFormContext } from "react-hook-form";
 import { Button, Heading } from "tw-components";
+import {
+  useConstructorParamsFromABI,
+  useFunctionParamsFromABI,
+} from "../hooks";
 
 interface FactoryFieldsetProps {
   abi: Abi;
   setCustomFactoryAbi: Dispatch<SetStateAction<Abi>>;
   shouldShowDynamicFactoryInput: boolean;
+  shouldShowHookParamInput: boolean;
+  deployParams:
+    | ReturnType<typeof useFunctionParamsFromABI>
+    | ReturnType<typeof useConstructorParamsFromABI>;
 }
 
 export const FactoryFieldset: React.FC<FactoryFieldsetProps> = ({
   abi,
   setCustomFactoryAbi,
   shouldShowDynamicFactoryInput,
+  shouldShowHookParamInput,
+  deployParams,
 }) => {
   const form = useFormContext();
 
@@ -53,6 +63,8 @@ export const FactoryFieldset: React.FC<FactoryFieldsetProps> = ({
           <DefaultFactory
             abi={abi}
             shouldShowDynamicFactoryInput={shouldShowDynamicFactoryInput}
+            shouldShowHookParamInput={shouldShowHookParamInput}
+            deployParams={deployParams}
           />
         )}
         {form.watch("deployType") === "customFactory" && (
