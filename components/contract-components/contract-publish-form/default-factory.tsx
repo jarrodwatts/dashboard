@@ -80,7 +80,7 @@ export const DefaultFactory: React.FC<DefaultFactoryProps> = ({
         {shouldShowHookParamInput && (
           <>
             <Flex flexDir="column" gap={2}>
-              <Heading size="title.md">Initializer function</Heading>
+              <Heading size="title.md">Hook Param</Heading>
               <Text>
                 The contract uses hooks. Choose the hook param name from the
                 initializer params below.
@@ -88,7 +88,6 @@ export const DefaultFactory: React.FC<DefaultFactoryProps> = ({
             </Flex>
             <FormControl isRequired>
               <HookParamSelector
-                defaultValue="_hooks"
                 deployParams={deployParams}
                 value={form.watch(
                   `factoryDeploymentData.modularFactoryInput.hooksParamName`,

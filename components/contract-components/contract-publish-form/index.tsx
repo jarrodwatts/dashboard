@@ -147,6 +147,10 @@ export const ContractPublishForm: React.FC<ContractPublishFormProps> = ({
       defaultExtensions:
         prePublishMetadata.data?.latestPublishedContractMetadata
           ?.publishedMetadata?.defaultExtensions || [],
+      hooksParamName:
+        prePublishMetadata.data?.latestPublishedContractMetadata
+          ?.publishedMetadata.factoryDeploymentData?.modularFactoryInput
+          ?.hooksParamName || "",
     };
   }, [
     configuredChainsIds,
@@ -348,6 +352,11 @@ export const ContractPublishForm: React.FC<ContractPublishFormProps> = ({
                         addressObj ||
                         data.factoryDeploymentData?.customFactoryInput
                           ?.customFactoryAddresses,
+                    },
+                    modularFactoryInput: {
+                      hooksParamName:
+                        data.factoryDeploymentData?.modularFactoryInput
+                          ?.hooksParamName || "",
                     },
                   },
                 },

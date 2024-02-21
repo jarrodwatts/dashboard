@@ -10,7 +10,6 @@ interface HookParamSelectorProps {
   deployParams:
     | ReturnType<typeof useFunctionParamsFromABI>
     | ReturnType<typeof useConstructorParamsFromABI>;
-  defaultValue: string;
   value: string;
   onChange: (fn: string) => void;
 }
@@ -18,7 +17,6 @@ interface HookParamSelectorProps {
 export const HookParamSelector: React.FC<HookParamSelectorProps> = ({
   deployParams,
   value,
-  defaultValue,
   onChange,
 }) => {
   const options = useMemo(() => {
@@ -33,7 +31,6 @@ export const HookParamSelector: React.FC<HookParamSelectorProps> = ({
       <Select
         placeholder="Select param"
         options={options}
-        defaultValue={options.find((o) => o.value === defaultValue)}
         chakraStyles={{
           container: (provided) => ({
             ...provided,

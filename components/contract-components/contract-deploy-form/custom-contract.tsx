@@ -52,6 +52,8 @@ import {
 import { TrustedForwardersFieldset } from "./trusted-forwarders-fieldset";
 import { DeprecatedAlert } from "components/shared/DeprecatedAlert";
 import { Chain } from "@thirdweb-dev/chains";
+import { HookInputFieldset } from "./hook-input-fieldset";
+import { HookOptions } from "@thirdweb-dev/sdk/dist/declarations/src/evm/types/any-evm/deploy-data";
 
 interface CustomContractFormProps {
   ipfsHash: string;
@@ -112,9 +114,14 @@ const CustomContractForm: React.FC<CustomContractFormProps> = ({
     fullPublishMetadata.data?.deployType === "autoFactory" ||
     fullPublishMetadata.data?.deployType === "customFactory";
 
+  const isModular = fullPublishMetadata.data?.routerType === "modular";
+
   const deployParams = isFactoryDeployment
     ? initializerParams
     : constructorParams;
+
+  const defaultExtensions: HookOptions[] = fullPublishMetadata.data
+    ?.defaultExtensions as HookOptions[];
 
   const isAccountFactory =
     !isFactoryDeployment &&
@@ -160,6 +167,7 @@ const CustomContractForm: React.FC<CustomContractFormProps> = ({
       image: string;
     };
     recipients?: Recipient[];
+    defaultExtensions?: HookOptions[];
   }>({
     defaultValues: {
       addToDashboard: true,
@@ -167,6 +175,7 @@ const CustomContractForm: React.FC<CustomContractFormProps> = ({
       saltForCreate2: "",
       signerAsSalt: true,
       deployParams: parseDeployParams,
+      defaultExtensions,
     },
     values: {
       addToDashboard: true,
@@ -174,6 +183,7 @@ const CustomContractForm: React.FC<CustomContractFormProps> = ({
       saltForCreate2: "",
       signerAsSalt: true,
       deployParams: parseDeployParams,
+      defaultExtensions,
     },
     resetOptions: {
       keepDirty: true,
@@ -240,6 +250,7 @@ const CustomContractForm: React.FC<CustomContractFormProps> = ({
   const deploy = useCustomContractDeployMutation(
     ipfsHash,
     isImplementationDeploy,
+    defaultExtensions,
     {
       hasContractURI,
       hasRoyalty,
@@ -379,6 +390,15 @@ const CustomContractForm: React.FC<CustomContractFormProps> = ({
                   forwarders={defaultForwarders}
                 />
               )}
+              {isModular && (
+                <HookInputFieldset
+                  form={form}
+                  hookParamKey={
+                    fullPublishMetadata.data?.factoryDeploymentData
+                      ?.modularFactoryInput?.hooksParamName || ""
+                  }
+                />
+              )}
               {Object.keys(formDeployParams).map((paramKey) => {
                 const deployParam = deployParams.find(
                   (p: any) => p.name === paramKey,
@@ -390,7 +410,10 @@ const CustomContractForm: React.FC<CustomContractFormProps> = ({
                 if (
                   shouldHide(paramKey) ||
                   extraMetadataParam?.hidden ||
-                  paramKey === "_trustedForwarders"
+                  paramKey === "_trustedForwarders" ||
+                  paramKey ===
+                    fullPublishMetadata.data?.factoryDeploymentData
+                      ?.modularFactoryInput?.hooksParamName
                 ) {
                   return null;
                 }

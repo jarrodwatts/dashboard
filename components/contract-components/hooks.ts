@@ -32,7 +32,10 @@ import {
   useWalletConfig,
 } from "@thirdweb-dev/react";
 import { FeatureWithEnabled } from "@thirdweb-dev/sdk/dist/declarations/src/evm/constants/contract-features";
-import { DeploymentTransaction } from "@thirdweb-dev/sdk/dist/declarations/src/evm/types/any-evm/deploy-data";
+import {
+  DeploymentTransaction,
+  HookOptions,
+} from "@thirdweb-dev/sdk/dist/declarations/src/evm/types/any-evm/deploy-data";
 import {
   Abi,
   ContractInfoSchema,
@@ -507,11 +510,13 @@ interface ContractDeployMutationParams {
   deployDeterministic?: boolean;
   saltForCreate2?: string;
   signerAsSalt?: boolean;
+  defaultExtensions?: HookOptions[];
 }
 
 export function useCustomContractDeployMutation(
   ipfsHash: string,
   forceDirectDeploy?: boolean,
+  hooks?: HookOptions[],
   {
     hasContractURI,
     hasRoyalty,
@@ -661,6 +666,7 @@ export function useCustomContractDeployMutation(
               Object.values(data.deployParams),
               {
                 forceDirectDeploy,
+                hooks,
               },
             );
           }
