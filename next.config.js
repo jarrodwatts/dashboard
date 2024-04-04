@@ -94,6 +94,19 @@ const moduleExports = {
       },
     ];
   },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Mock or exclude certain Node.js modules for client-side
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        // Mock or exclude specific Node modules
+        // For example, to ignore child_process on the client-side
+        child_process: false,
+      };
+    }
+
+    return config;
+  },
   async redirects() {
     return redirects();
   },

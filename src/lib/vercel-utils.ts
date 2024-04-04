@@ -11,6 +11,7 @@ function getVercelEnv() {
 }
 
 export function getAbsoluteUrl(): string {
+  return "https://51d8-86-144-7-16.ngrok-free.app";
   // once we're in the browser we can just use the window.location.origin
   if (isBrowser()) {
     return window.location.origin;

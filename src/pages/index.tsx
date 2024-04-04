@@ -14,15 +14,34 @@ import { WithoutThirdwebSection } from "components/homepage/sections/WithoutThir
 import { PartnerCarousel } from "components/partners/carousel";
 import { HomepageTopNav } from "components/product-pages/common/Topnav";
 import { PageId } from "page-id";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { ThirdwebNextPage } from "utils/types";
 import { metrics } from "components/product-pages/common/nav/data";
 import { Heading, Text } from "tw-components";
 import LandingCardWithMetrics from "components/landing-pages/card-with-metrics";
+import { thirdwebClient } from "lib/thirdweb-client";
+import { getBuyWithCryptoQuote } from "thirdweb";
 
 const TRACKING_CATEGORY = "homepage";
 
 const HomePage: ThirdwebNextPage = () => {
+  useEffect(() => {
+    const test = async () => {
+      const quote = await getBuyWithCryptoQuote({
+        client: thirdwebClient,
+        fromAddress: "0x7713974908Be4BEd47172370115e8b1219F4A5f0",
+        fromChainId: 1,
+        fromTokenAddress: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        fromAmount: "10",
+        toChainId: 137,
+        toTokenAddress: "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      });
+      console.log({ quote });
+    };
+
+    test();
+  }, []);
+
   return (
     <DarkMode>
       <Flex

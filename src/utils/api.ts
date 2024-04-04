@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getBuyWithCryptoQuote } from "thirdweb/pay";
 
 export const errorResponse = (message: string, status: 400 | 500) => {
   return NextResponse.json(
