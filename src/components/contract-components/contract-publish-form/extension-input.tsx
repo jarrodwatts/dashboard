@@ -25,15 +25,12 @@ export const ExtensionInput: React.FC<ExtensionInputProps> = ({
   remove,
 }) => {
   const form = useFormContext();
+  const feature = isModular ? "ModularExtension" : "";
 
-  const publishedContractsQuery = isModular
-    ? usePublishedContractsQuery(
-        form.watch(`defaultExtensions.${index}.publisherAddress`),
-        "ModularExtension",
-      )
-    : usePublishedContractsQuery(
-        form.watch(`defaultExtensions.${index}.publisherAddress`),
-      );
+  const publishedContractsQuery = usePublishedContractsQuery(
+    form.watch(`defaultExtensions.${index}.publisherAddress`),
+    feature,
+  );
 
   const allVersions = useAllVersions(
     form.watch(`defaultExtensions.${index}.publisherAddress`),

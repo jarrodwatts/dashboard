@@ -843,7 +843,7 @@ export function usePublishedContractsQuery(address?: string, feature?: string) {
     ["published-contracts", address],
     () => {
       invariant(sdk, "sdk not provided");
-      return feature
+      return feature && feature.length > 0
         ? fetchPublishedContractsWithFeature(sdk, queryClient, feature, address)
         : fetchPublishedContracts(sdk, queryClient, address);
     },
