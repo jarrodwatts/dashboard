@@ -4,7 +4,13 @@ import { FiPlus } from "react-icons/fi";
 import { Heading, Text, Button } from "tw-components";
 import { ExtensionInput } from "./extension-input";
 
-export const DynamicContractsFieldset = () => {
+interface DynamicContractsFieldsetInputProps {
+  isModular: boolean;
+}
+
+export const DynamicContractsFieldset: React.FC<
+  DynamicContractsFieldsetInputProps
+> = ({ isModular }) => {
   const form = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
@@ -15,12 +21,17 @@ export const DynamicContractsFieldset = () => {
   return (
     <Flex gap={8} direction="column" as="fieldset">
       <Flex gap={2} direction="column">
-        <Heading size="title.md">Dynamic Contract settings</Heading>
-        <Text>You can set default extensions for your dynamic contract.</Text>
+        <Heading size="title.md">Contract extension settings</Heading>
+        <Text>You can set default extensions for your contract.</Text>
       </Flex>
       <Flex flexDir="column" gap={4}>
         {fields.map((item, index) => (
-          <ExtensionInput key={item.id} remove={remove} index={index} />
+          <ExtensionInput
+            key={item.id}
+            remove={remove}
+            index={index}
+            isModular={isModular}
+          />
         ))}
         <Box>
           <Button

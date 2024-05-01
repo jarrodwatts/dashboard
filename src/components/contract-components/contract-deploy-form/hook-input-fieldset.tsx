@@ -19,11 +19,16 @@ export const HookInputFieldset: React.FC<HookInputFieldsetProps> = ({
   });
   return (
     <Flex pb={4} direction="column" gap={2}>
-      <Heading size="label.lg">Default Hooks</Heading>
+      <Heading size="label.lg">Default Extensions</Heading>
 
       <Flex flexDir="column" gap={2}>
         {fields.map((item, index) => (
-          <ExtensionInput key={item.id} remove={remove} index={index} />
+          <ExtensionInput
+            key={item.id}
+            remove={remove}
+            index={index}
+            isModular={true}
+          />
         ))}
         <Box>
           <Button
@@ -40,7 +45,7 @@ export const HookInputFieldset: React.FC<HookInputFieldsetProps> = ({
               })
             }
           >
-            Add Hook
+            Add Extension
           </Button>
         </Box>
       </Flex>

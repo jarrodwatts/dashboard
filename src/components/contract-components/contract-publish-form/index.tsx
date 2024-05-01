@@ -258,7 +258,7 @@ export const ContractPublishForm: React.FC<ContractPublishFormProps> = ({
     () =>
       isExtensionEnabled(
         publishMetadata.data?.abi as Abi,
-        "HookInstaller",
+        "ModularCore",
         extensions,
       ),
     [publishMetadata.data?.abi, extensions],

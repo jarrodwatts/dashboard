@@ -80,10 +80,10 @@ export const DefaultFactory: React.FC<DefaultFactoryProps> = ({
         {shouldShowHookParamInput && (
           <>
             <Flex flexDir="column" gap={2}>
-              <Heading size="title.md">Hook Param</Heading>
+              <Heading size="title.md">Extension Param</Heading>
               <Text>
-                The contract uses hooks. Choose the hook param name from the
-                initializer params below.
+                The contract uses extensions. Choose the extension param name
+                from the initializer params below.
               </Text>
             </Flex>
             <FormControl isRequired>
@@ -104,7 +104,9 @@ export const DefaultFactory: React.FC<DefaultFactoryProps> = ({
         )}
       </Flex>
       <NetworksFieldset />
-      {shouldShowDynamicFactoryInput && <DynamicContractsFieldset />}
+      {shouldShowDynamicFactoryInput && (
+        <DynamicContractsFieldset isModular={shouldShowHookParamInput} />
+      )}
     </Flex>
   );
 };
