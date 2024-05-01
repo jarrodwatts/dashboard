@@ -173,7 +173,7 @@ const CustomContractForm: React.FC<CustomContractFormProps> = ({
       defaultExtensions,
       recipients: [{ address: connectedWallet || "", sharesBps: 10000 }],
     }),
-    [parsedDeployParams, isAccountFactory, connectedWallet],
+    [parsedDeployParams, isAccountFactory, connectedWallet, defaultExtensions],
   );
 
   const form = useForm<{
