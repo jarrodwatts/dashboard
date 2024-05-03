@@ -45,7 +45,7 @@ export const MismatchButton = forwardRef<HTMLButtonElement, ConnectWalletProps>(
       onChainSelect,
       ...props
     },
-    ref,
+    ref
   ) => {
     const wallet = useWallet();
     const evmBalance = useBalance();
@@ -72,7 +72,7 @@ export const MismatchButton = forwardRef<HTMLButtonElement, ConnectWalletProps>(
       );
     }
     const shouldShowEVMFaucet = BigNumber.from(evmBalance.data?.value || 0).eq(
-      0,
+      0
     );
     return (
       <Popover
@@ -149,7 +149,7 @@ export const MismatchButton = forwardRef<HTMLButtonElement, ConnectWalletProps>(
         </Card>
       </Popover>
     );
-  },
+  }
 );
 
 MismatchButton.displayName = "MismatchButton";
@@ -361,7 +361,7 @@ const UpsellTestnetNotice: React.FC<{
       </Text>
       <Text>
         You can either get funds on this network or switch to a testnet like
-        Mumbai to test your contract.
+        Amoy to test your contract.
       </Text>
 
       <Button
